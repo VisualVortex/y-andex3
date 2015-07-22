@@ -7,7 +7,7 @@
 </head>
 
 <body>
-<div class="too-player"  style="position: relative; top: 0; left: 0" onmousedown="dragOBJ(this,event); return false;" >
+<div class="too-player" style="position: relative; top: 0; left: 0"><!--onmousedown="dragOBJ(this,event); return false;"-->
     <div>
         <label class="file" for="files">Файл</label>
         <span class="logo">TooLive Player</span>
@@ -26,7 +26,7 @@
     <br>
 
 
-    <div id="progressBar"><span id="progress">&nbsp;</span></div>
+    <input id="progressBar" type="range" min="0" max="300" value="0" step="1"><span id="progress">&nbsp;</span></input>
     <br>
 
     <!-- equalizer -->
@@ -42,6 +42,11 @@
         <label for="pop">Поп</label>
         <label for="classic">Классика</label>
         <label for="jazz">Джаз</label>
+    </div>
+
+
+    <div id="timebox">
+        <span id="curtimetext">00:00</span> / <span id="durtimetext">00:00</span>
     </div>
 
     <!-- visualizer -->

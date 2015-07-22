@@ -38,23 +38,13 @@ function handleFileSelect(evt) {
         output.push('<stong>', f.name, '</stong>')
     }
     document.getElementById('drop_zone').innerHTML = output.join('');
-
-    /*var output2 = [];
-    for (var i = 0, f; f = files[i]; i++) {
-        output2.push(f.type || 'n/a', ' - ',
-            f.size, ' bytes, last modified: ',
-            f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a'
-            )
-    }
-    document.getElementById('file-info').innerHTML = output2.join('')*/
-
 }
 
 
 function handleDragOver(evt) {
     evt.stopPropagation();
     evt.preventDefault();
-    evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+    evt.dataTransfer.dropEffect = 'copy';
 }
 
 // Setup the dnd listeners.
@@ -83,16 +73,6 @@ function togglePlay() {
         if (!play) {
             audio.play();
             playButton.className = 'pause';
-            /*playButton.cssText="padding: 0;\
-             border: solid 7px red;\
-             border-bottom: 0;\
-             border-top: 0;\
-             width: 20px;\
-             height: 20px;\
-             background: transparent;\
-             ";*/
-
-            /*playButton.style = ": 20px solid green;";*/
             play = true;
         } else {
             audio.pause();
@@ -267,11 +247,11 @@ function updateProgress() {
         //value = Math.floor((100 / audio.duration) * audio.currentTime);
         value = ((100 / audio.duration) * audio.currentTime).toFixed(2);
     }
-    progress.style.width = value + "%";
+    /*progress.style.width = value + "%";*/
 }
-audio.addEventListener("timeupdate", updateProgress, false);
+audio.addEventListener("timeupdate", updateProgress, true);
 
-/* Move */
+/*/!* Move *!/
 function $(v) { return(document.getElementById(v)); }
 function agent(v) { return(Math.max(navigator.userAgent.toLowerCase().indexOf(v),0)); }
 function xy(e,v) { return(v?(agent('msie')?event.clientY+document.body.scrollTop:e.pageY):(agent('msie')?event.clientX+document.body.scrollTop:e.pageX)); }
@@ -279,4 +259,39 @@ function dragOBJ(d,e) {
     function drag(e) { if(!stop) { d.style.top=(tX=xy(e,1)+oY-eY+'px'); d.style.left=(tY=xy(e)+oX-eX+'px'); } }
     var oX=parseInt(d.style.left),oY=parseInt(d.style.top),eX=xy(e),eY=xy(e,1),tX,tY,stop;
     document.onmousemove=drag; document.onmouseup=function(){ stop=1; document.onmousemove=''; document.onmouseup=''; };
+}*/
+
+/*  Time */
+var curtimetext, durtimetext, seekslider, seeking=false, seekto;
+curtimetext = document.getElementById("curtimetext");
+durtimetext = document.getElementById("durtimetext");
+seekslider = document.getElementById("progressBar");
+seekslider.addEventListener("mousedown", function(event){ seeking=true; seek(event); });
+seekslider.addEventListener("mousemove", function(event){ seek(event); });
+seekslider.addEventListener("mouseup",function(){ seeking=false; });
+audio.addEventListener("timeupdate", function(){ seektimeupdate(); });
+function seek(event){
+    if(seeking){
+        seekslider.value = event.offsetX;
+        seekto = audio.duration * (seekslider.value / 100);
+        console.log(audio.duration);
+        console.log(event.offsetX);
+        console.log(seekslider.value);
+        audio.currentTime = seekto;
+    }
 }
+function seektimeupdate(){
+    var nt = audio.currentTime * (100 / audio.duration);
+    seekslider.value = nt;
+    var curmins = Math.floor(audio.currentTime / 60);
+    var cursecs = Math.floor(audio.currentTime - curmins * 60);
+    var durmins = Math.floor(audio.duration / 60);
+    var dursecs = Math.floor(audio.duration - durmins * 60);
+    if(cursecs < 10){ cursecs = "0"+cursecs; }
+    if(dursecs < 10){ dursecs = "0"+dursecs; }
+    if(curmins < 10){ curmins = "0"+curmins; }
+    if(durmins < 10){ durmins = "0"+durmins; }
+    curtimetext.innerHTML = curmins+":"+cursecs;
+    durtimetext.innerHTML = durmins+":"+dursecs;
+}
+
