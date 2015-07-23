@@ -1,10 +1,12 @@
 'use strict'
-var reader, audioBuffer;
+/*var reader, audioBuffer;*/
 
 
 /*Drug and drop*/
 var files, tags;
 function handleFileSelect(evt) {
+    files = "";
+    stopPlay();
     evt.stopPropagation();
     evt.preventDefault();
     console.log(evt.target.id);
@@ -14,10 +16,19 @@ function handleFileSelect(evt) {
         //playlist.concat(evt.dataTransfer.files); // FileList object.
         console.log(files);
         console.log(typeof files);
+        console.log("Кинули файл");
+        console.log(evt.target.id);
+        console.log("Если кинули " + evt.target.id);
     } else if (evt.target.id === "files") {
         files = evt.target.files;
+        console.log("выбрали файл");
         //playlist.concat(evt.target.files);
-    }
+    } /*else {
+        evt.target.id = "drop_zone";
+        console.log("ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ");
+        files = evt.target.files;
+    }*/
+
     var file = files[0];
     audio.src = URL.createObjectURL(files[0]);
 
@@ -25,6 +36,7 @@ function handleFileSelect(evt) {
         function () {
             tags = ID3.getAllTags(file.name);
             console.log(tags);
+            console.log("Рядом с тегами " + evt.target.id);
         },
         {
             tags: ["artist", "title", "album", "year", "comment", "track", "genre", "lyrics", "picture"],
@@ -38,13 +50,20 @@ function handleFileSelect(evt) {
         output.push('<stong>', f.name, '</stong>')
     }
     document.getElementById('drop_zone').innerHTML = output.join('');
+    audio.play();
+    play = true;
+    playButton.className = 'pause';
+    seektimeupdate();
+    console.log("После обновления времени " + evt.target.id);
 }
 
 
 function handleDragOver(evt) {
+    stopPlay();
     evt.stopPropagation();
     evt.preventDefault();
     evt.dataTransfer.dropEffect = 'copy';
+    evt.target.id = "drop_zone";
 }
 
 // Setup the dnd listeners.
@@ -84,6 +103,7 @@ function togglePlay() {
 function stopPlay() {
     audio.pause();
     audio.currentTime = 0;
+    playButton.className = 'play';
     play = false;
 }
 
@@ -96,8 +116,8 @@ stopButton.addEventListener('click', function (e) {
     stopPlay();
 });
 /*Draw visualization*/
-var WIDTH = 400;
-var HEIGHT = 100;
+var WIDTH = 350;
+var HEIGHT = 80;
 var analyser = context.createAnalyser();
 var canvas = document.getElementById('waveform');
 var canvasCtx = waveform.getContext('2d');
@@ -113,7 +133,7 @@ function drawWaveform() {
     function draw() {
         //var drawVisual = requestAnimationFrame(draw);
         analyser.getByteTimeDomainData(dataArray);
-        canvasCtx.fillStyle = 'rgb(200, 200, 200)';
+        canvasCtx.fillStyle = 'rgb(256, 256, 256)';
         canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
         canvasCtx.lineWidth = 2;
         canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
@@ -147,25 +167,23 @@ function drawWaveform() {
 }
 /*Spectrum*/
 function drawSpectrum() {
-    analyser.fftSize = 256;
+    analyser.fftSize = 2048;
 
     canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
     function draw() {
         requestAnimationFrame(draw);
         analyser.getByteFrequencyData(dataArray);
 
-        canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+        canvasCtx.fillStyle = 'rgb(256, 256, 256)';
         canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
-        var barWidth = (WIDTH / bufferLength) * 25;
+        var barWidth = (WIDTH / bufferLength) * 17;
         var barHeight;
         var x = 0;
         for (var i = 0; i < bufferLength; i++) {
             barHeight = dataArray[i] / 2;
-
-            canvasCtx.fillStyle = 'rgb(' + (barHeight + 100) + ',50,50)';
+            canvasCtx.fillStyle = 'rgb(' + barHeight + ',' + barHeight + ',' + barHeight * 3  +')';
             canvasCtx.fillRect(x, HEIGHT - barHeight / 2, barWidth, barHeight);
-
-            x += barWidth + 1;
+            x += barWidth + 1.5;
         }
     }
 
@@ -247,7 +265,7 @@ function updateProgress() {
         //value = Math.floor((100 / audio.duration) * audio.currentTime);
         value = ((100 / audio.duration) * audio.currentTime).toFixed(2);
     }
-    /*progress.style.width = value + "%";*/
+    progress.style.width = value + "%";
 }
 audio.addEventListener("timeupdate", updateProgress, true);
 
@@ -272,21 +290,20 @@ seekslider.addEventListener("mouseup",function(){ seeking=false; });
 audio.addEventListener("timeupdate", function(){ seektimeupdate(); });
 function seek(event){
     if(seeking){
-        seekslider.value = event.offsetX;
+        seekslider.value = event.offsetX / 100 * 93 / 3;
         seekto = audio.duration * (seekslider.value / 100);
-        console.log(audio.duration);
-        console.log(event.offsetX);
-        console.log(seekslider.value);
-        audio.currentTime = seekto;
+        audio.currentTime =  seekto;
     }
 }
 function seektimeupdate(){
-    var nt = audio.currentTime * (100 / audio.duration);
-    seekslider.value = nt;
+    /*var nt = audio.currentTime * (100 / audio.duration);*/
+    seekslider.value = audio.currentTime * (100 / audio.duration);
     var curmins = Math.floor(audio.currentTime / 60);
     var cursecs = Math.floor(audio.currentTime - curmins * 60);
     var durmins = Math.floor(audio.duration / 60);
     var dursecs = Math.floor(audio.duration - durmins * 60);
+    if (isNaN(dursecs)){dursecs = "0"}
+    if (isNaN(durmins)){durmins = "0"}
     if(cursecs < 10){ cursecs = "0"+cursecs; }
     if(dursecs < 10){ dursecs = "0"+dursecs; }
     if(curmins < 10){ curmins = "0"+curmins; }

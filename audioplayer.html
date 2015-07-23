@@ -29,7 +29,9 @@
     <br>
 
 
-    <input id="progressBar" type="range" min="0" max="100" value="0" step="1"><span id="progress">&nbsp;</span></input>
+    <div id="progressBar">
+        <span id="progress">&nbsp;</span>
+    </div>
     <br>
 
     <!-- equalizer -->
@@ -55,10 +57,11 @@
     <input id="spectrum" type="radio" value="spectrum" name="visualization"/>
 
     <div class="visualizer">
+        <div class="goodButton"><button id="testButton" class="testButton"></button></div>
         <label for="wave">Волна</label>
         <label for="spectrum">Спектр</label>
     </div>
-    <canvas height="100" width="400" id="waveform">999</canvas>
+    <canvas height="80" width="400" id="waveform">999</canvas>
 </div>
 
 
