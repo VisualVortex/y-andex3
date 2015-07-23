@@ -20,13 +20,16 @@
         <button id="play" class="play"></button>
         <button id="stop"></button>
         <input class="volume" type="range" min="0" max="1" value="0.5" step="0.01"/>
+        <div id="timebox">
+            <span id="curtimetext">00:00</span> / <span id="durtimetext">00:00</span>
+        </div>
 
     </div>
     <div class="clear"></div>
     <br>
 
 
-    <input id="progressBar" type="range" min="0" max="300" value="0" step="1"><span id="progress">&nbsp;</span></input>
+    <input id="progressBar" type="range" min="0" max="100" value="0" step="1"><span id="progress">&nbsp;</span></input>
     <br>
 
     <!-- equalizer -->
@@ -45,9 +48,7 @@
     </div>
 
 
-    <div id="timebox">
-        <span id="curtimetext">00:00</span> / <span id="durtimetext">00:00</span>
-    </div>
+
 
     <!-- visualizer -->
     <input id="wave" type="radio" value="wave" name="visualization"/>
