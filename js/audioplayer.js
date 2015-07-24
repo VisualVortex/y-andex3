@@ -15,11 +15,6 @@ function handleFileSelect(evt) {
     if (evt.target.id === "drop_zone") {
         files = evt.dataTransfer.files; // FileList object.
         //playlist.concat(evt.dataTransfer.files); // FileList object.
-        console.log(files);
-        console.log(typeof files);
-        console.log("Кинули файл");
-        console.log(evt.target.id);
-        console.log("Если кинули " + evt.target.id);
     } else if (evt.target.id === "files") {
         files = evt.target.files;
         console.log("выбрали файл");
@@ -30,23 +25,6 @@ function handleFileSelect(evt) {
         updateMetaData(files[0]);
 
     }
- /*   if (!playlist.length) {
-        audio.src = URL.createObjectURL(files[0]);
-        updateMetaData(files[0]);
-
-    }
-    var ul = document.querySelector('#list ul');
-    for (var i = 0, f; f = files[i]; i++) {
-        ul.innerHTML += ('<li><strong><a href="#" data-track="'+playlist.length+'">' + f.name + '</a></strong></li>');
-        playlist.push(files[i]);
-
-    }*/
-
-     /*else {
-        evt.target.id = "drop_zone";
-        console.log("ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ");
-        files = evt.target.files;
-    }*/
 
     var file = files[0];
     audio.src = URL.createObjectURL(files[0]);
@@ -66,12 +44,30 @@ function handleFileSelect(evt) {
     // files is a FileList of File objects. List some properties.
     var output = [];
     for (var i = 0, f; f = files[i]; i++) {
-        output.push('<stong>', f.name, '</stong>')
+        output.push('<stong>', f.name, '</stong>');
+        /*Test*/
+
+        reader = new FileReader();
+        reader.onload = (function (theFile) {
+            return function (e) {
+                // Render thumbnail.
+                console.log('Load start');
+                initSound(e.target.result);
+
+
+            };
+        })(f);
+        reader.readAsArrayBuffer(f);
+
+
+        /*Test*/
+
     }
     document.getElementById('drop_zone').innerHTML = output.join('');
+/*    playSound();
     audio.play();
     play = true;
-    playButton.className = 'pause';
+    playButton.className = 'pause';*/
     seektimeupdate();
     console.log("После обновления времени " + evt.target.id);
 }
@@ -110,6 +106,7 @@ var stopButton = document.getElementById('stop');
 function togglePlay() {
     if (files) {
         if (!play) {
+            playSound();
             audio.play();
             playButton.className = 'pause';
             play = true;
@@ -201,7 +198,7 @@ function drawSpectrum() {
         var x = 0;
         for (var i = 0; i < bufferLength; i++) {
             barHeight = dataArray[i] / 2;
-            canvasCtx.fillStyle = 'rgb(' + barHeight + ',' + barHeight + ',' + barHeight * 3  +')';
+            canvasCtx.fillStyle = 'rgb(' + barHeight + ',' + barHeight + ',' + barHeight * 3 + ')';
             canvasCtx.fillRect(x, HEIGHT - barHeight / 2, barWidth, barHeight);
             x += barWidth + 1.5;
         }
@@ -225,8 +222,6 @@ for (var i = 0; i < radios.length; i++) {
         setVisualization(e.target.value);
     })
 }
-
-
 
 /*Presets equalizer*/
 var frequencyArr = [31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
@@ -289,47 +284,58 @@ function updateProgress() {
 }
 audio.addEventListener("timeupdate", updateProgress, true);
 
-/*/!* Move *!/
-function $(v) { return(document.getElementById(v)); }
-function agent(v) { return(Math.max(navigator.userAgent.toLowerCase().indexOf(v),0)); }
-function xy(e,v) { return(v?(agent('msie')?event.clientY+document.body.scrollTop:e.pageY):(agent('msie')?event.clientX+document.body.scrollTop:e.pageX)); }
-function dragOBJ(d,e) {
-    function drag(e) { if(!stop) { d.style.top=(tX=xy(e,1)+oY-eY+'px'); d.style.left=(tY=xy(e)+oX-eX+'px'); } }
-    var oX=parseInt(d.style.left),oY=parseInt(d.style.top),eX=xy(e),eY=xy(e,1),tX,tY,stop;
-    document.onmousemove=drag; document.onmouseup=function(){ stop=1; document.onmousemove=''; document.onmouseup=''; };
-}*/
-
 /*  Time */
-var curtimetext, durtimetext, seekslider, seeking=false, seekto;
+var curtimetext, durtimetext, seekslider, seeking = false, seekto;
 curtimetext = document.getElementById("curtimetext");
 durtimetext = document.getElementById("durtimetext");
 seekslider = document.getElementById("progressBar");
-seekslider.addEventListener("mousedown", function(event){ seeking=true; seek(event); });
-seekslider.addEventListener("mousemove", function(event){ seek(event); });
-seekslider.addEventListener("mouseup",function(){ seeking=false; });
-audio.addEventListener("timeupdate", function(){ seektimeupdate(); });
-function seek(event){
-    if(seeking){
+seekslider.addEventListener("mousedown", function (event) {
+    seeking = true;
+    seek(event);
+});
+seekslider.addEventListener("mousemove", function (event) {
+    seek(event);
+});
+seekslider.addEventListener("mouseup", function () {
+    seeking = false;
+});
+audio.addEventListener("timeupdate", function () {
+    seektimeupdate();
+});
+function seek(event) {
+    if (seeking) {
         seekslider.value = event.offsetX / 100 * 93 / 3;
         seekto = audio.duration * (seekslider.value / 100);
-        audio.currentTime =  seekto;
+        audio.currentTime = seekto;
     }
 }
-function seektimeupdate(){
+function seektimeupdate() {
     /*var nt = audio.currentTime * (100 / audio.duration);*/
     seekslider.value = audio.currentTime * (100 / audio.duration);
     var curmins = Math.floor(audio.currentTime / 60);
     var cursecs = Math.floor(audio.currentTime - curmins * 60);
     var durmins = Math.floor(audio.duration / 60);
     var dursecs = Math.floor(audio.duration - durmins * 60);
-    if (isNaN(dursecs)){dursecs = "0"}
-    if (isNaN(durmins)){durmins = "0"}
-    if(cursecs < 10){ cursecs = "0"+cursecs; }
-    if(dursecs < 10){ dursecs = "0"+dursecs; }
-    if(curmins < 10){ curmins = "0"+curmins; }
-    if(durmins < 10){ durmins = "0"+durmins; }
-    curtimetext.innerHTML = curmins+":"+cursecs;
-    durtimetext.innerHTML = durmins+":"+dursecs;
+    if (isNaN(dursecs)) {
+        dursecs = "0"
+    }
+    if (isNaN(durmins)) {
+        durmins = "0"
+    }
+    if (cursecs < 10) {
+        cursecs = "0" + cursecs;
+    }
+    if (dursecs < 10) {
+        dursecs = "0" + dursecs;
+    }
+    if (curmins < 10) {
+        curmins = "0" + curmins;
+    }
+    if (durmins < 10) {
+        durmins = "0" + durmins;
+    }
+    curtimetext.innerHTML = curmins + ":" + cursecs;
+    durtimetext.innerHTML = durmins + ":" + dursecs;
 }
 
 /* Meta */
@@ -340,7 +346,7 @@ function updateMetaData(file) {
             console.log(tags);
             document.getElementById("artist").textContent = " | " + tags.artist || "";
             document.getElementById("title").textContent = tags.title || "";
-            document.styleSheets[0].insertRule(".meta {height: 18 !important;}",0);
+            document.styleSheets[0].insertRule(".meta {height: 18 !important;}", 0);
             var meta = document.getElementById('meta').style.height = "18px";
             document.getElementById('meta').style.opacity = "1";
         },
@@ -349,3 +355,37 @@ function updateMetaData(file) {
             dataReader: FileAPIReader(file)
         });
 }
+
+/* Sound? */
+var startTime = 0;
+var startOffset = 0, audioBuffer,reader;
+function playSound() {
+    source = context.createBufferSource();
+    source.buffer = audioBuffer;
+    //source.connect(context.destination);
+    source.connect(volumeSample);
+    volumeSample.connect(context.destination);
+    volumeSample.gain.value = range.value;
+    startTime = context.currentTime;
+    console.log('Start time:', startTime);
+    console.log('Start offset:', startOffset);
+    console.log('Start %:', startOffset % source.buffer);
+    source.start(0, startOffset % source.buffer.duration);
+
+}
+function initSound(arrayBuffer) {
+    context.decodeAudioData(arrayBuffer, function (buffer) {
+        audioBuffer = buffer;
+        console.log(buffer);
+        console.log('Load end');
+        var buttons = document.querySelectorAll('button');
+        buttons[0].disabled = false;
+        buttons[1].disabled = false;
+    }, function (e) {
+        console.log('Error decoding', e);
+    });
+}
+var range = document.querySelector('input[type="range"]')
+range.addEventListener('input', function(e){
+    volumeSample.gain.value = e.target.value;
+});
