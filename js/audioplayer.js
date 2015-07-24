@@ -6,10 +6,10 @@ var playlist = [];
 /*Drug and drop*/
 
 function handleFileSelect(evt) {
-    files = "";
-    stopPlay();
     evt.stopPropagation();
     evt.preventDefault();
+    files = "";
+    /*stopPlay();*/
     console.log(evt.target.id);
 
     if (evt.target.id === "drop_zone") {
@@ -24,6 +24,11 @@ function handleFileSelect(evt) {
         files = evt.target.files;
         console.log("выбрали файл");
         //playlist.concat(evt.target.files);
+    }
+    if (!playlist.length) {
+        audio.src = URL.createObjectURL(files[0]);
+        updateMetaData(files[0]);
+
     }
  /*   if (!playlist.length) {
         audio.src = URL.createObjectURL(files[0]);
@@ -73,11 +78,12 @@ function handleFileSelect(evt) {
 
 
 function handleDragOver(evt) {
-    stopPlay();
     evt.stopPropagation();
     evt.preventDefault();
+    /*stopPlay();*/
     evt.dataTransfer.dropEffect = 'copy';
     evt.target.id = "drop_zone";
+    /*evt.target.className = "drop_zone2";*/
 }
 
 // Setup the dnd listeners.
@@ -130,7 +136,7 @@ stopButton.addEventListener('click', function (e) {
     stopPlay();
 });
 /*Draw visualization*/
-var WIDTH = 350;
+var WIDTH = 400;
 var HEIGHT = 80;
 var analyser = context.createAnalyser();
 var canvas = document.getElementById('waveform');
@@ -147,10 +153,10 @@ function drawWaveform() {
     function draw() {
         //var drawVisual = requestAnimationFrame(draw);
         analyser.getByteTimeDomainData(dataArray);
-        canvasCtx.fillStyle = 'rgb(256, 256, 256)';
+        canvasCtx.fillStyle = 'rgb(0, 0, 0)';
         canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
         canvasCtx.lineWidth = 2;
-        canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
+        canvasCtx.strokeStyle = 'rgb(256, 256, 256)';
 
         canvasCtx.beginPath();
 
@@ -181,14 +187,14 @@ function drawWaveform() {
 }
 /*Spectrum*/
 function drawSpectrum() {
-    analyser.fftSize = 2048;
+    analyser.fftSize = 256;
 
     canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
     function draw() {
         requestAnimationFrame(draw);
         analyser.getByteFrequencyData(dataArray);
 
-        canvasCtx.fillStyle = 'rgb(256, 256, 256)';
+        canvasCtx.fillStyle = 'rgb(0, 0, 0)';
         canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
         var barWidth = (WIDTH / bufferLength) * 17;
         var barHeight;
@@ -326,43 +332,20 @@ function seektimeupdate(){
     durtimetext.innerHTML = durmins+":"+dursecs;
 }
 
-/*PlayList*/
-var currentTrack = 0;
-var changeTrack = function (i) {
-    console.log(currentTrack);
-    document.querySelectorAll('#list a')[currentTrack].classList.remove('current');
-    playButton.classList.add('pause');
-    if (currentTrack + i >= 0) {
-        currentTrack = currentTrack + i;
-    } else {
-        currentTrack = 0;
-    }
-    if (currentTrack < playlist.length) {
-        audio.src = URL.createObjectURL(playlist[currentTrack]);
-        audio.play();
-    } else {
-        currentTrack = 0;
-        audio.src = URL.createObjectURL(playlist[currentTrack]);
-        playButton.classList.remove('pause');
-    }
-    document.querySelectorAll('#list a')[currentTrack].classList.add('current');
-    updateMetaData(playlist[currentTrack]);
-    updateProgress();
-};
-
-audio.addEventListener('ended', function (e) {
-    changeTrack(1);
-});
-document.getElementById('prev').addEventListener('click', function (e) {
-    changeTrack(-1);
-});
-document.getElementById('next').addEventListener('click', function (e) {
-    changeTrack(1);
-});
-/*Navigation in playlist*/
-document.getElementById('list').addEventListener('click', function(e){
-    e.preventDefault();
-    if (e.target.nodeName === "A") {
-        changeTrack(e.target.attributes["data-track"].value - currentTrack);
-    }
-});
+/* Meta */
+function updateMetaData(file) {
+    ID3.loadTags(file.name,
+        function () {
+            tags = ID3.getAllTags(file.name);
+            console.log(tags);
+            document.getElementById("artist").textContent = " | " + tags.artist || "";
+            document.getElementById("title").textContent = tags.title || "";
+            document.styleSheets[0].insertRule(".meta {height: 18 !important;}",0);
+            var meta = document.getElementById('meta').style.height = "18px";
+            document.getElementById('meta').style.opacity = "1";
+        },
+        {
+            tags: ["artist", "title"],
+            dataReader: FileAPIReader(file)
+        });
+}

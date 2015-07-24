@@ -16,7 +16,10 @@
     <input type="file" id="files" value="файл">
 
     <output id="drop_zone" class="list">Перетащите сюда аудиофайл</output>
-
+    <div id="meta" class="meta">
+        <span id="title"></span>
+        <span id="artist"></span>
+    </div>
     <div class="buttons">
         <div class="goodButton">
             <button id="play" class="play"></button>
@@ -56,22 +59,19 @@
 
 
     <!-- visualizer -->
+    <input id="off" type="radio" value="off" name="visualization" checked/>
     <input id="wave" type="radio" value="wave" name="visualization"/>
     <input id="spectrum" type="radio" value="spectrum" name="visualization"/>
 
     <div class="visualizer">
+        <label for="off">Выкл.</label>
         <label for="wave">Волна</label>
         <label for="spectrum">Спектр</label>
     </div>
     <canvas height="80" width="400" id="waveform">999</canvas>
-    <div id="playlist">
-        <div id="list"><ul>1</ul></div>
-    </div>
 </div>
-
-
-
 <script src="js/id3-min.js"></script>
 <script src="js/audioplayer.js"></script>
+
 </body>
 </html>
