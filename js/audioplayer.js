@@ -1,9 +1,10 @@
 'use strict'
 /*var reader, audioBuffer;*/
-
-
-/*Drug and drop*/
+var audio = new Audio();
 var files, tags;
+var playlist = [];
+/*Drug and drop*/
+
 function handleFileSelect(evt) {
     files = "";
     stopPlay();
@@ -23,7 +24,20 @@ function handleFileSelect(evt) {
         files = evt.target.files;
         console.log("выбрали файл");
         //playlist.concat(evt.target.files);
-    } /*else {
+    }
+ /*   if (!playlist.length) {
+        audio.src = URL.createObjectURL(files[0]);
+        updateMetaData(files[0]);
+
+    }
+    var ul = document.querySelector('#list ul');
+    for (var i = 0, f; f = files[i]; i++) {
+        ul.innerHTML += ('<li><strong><a href="#" data-track="'+playlist.length+'">' + f.name + '</a></strong></li>');
+        playlist.push(files[i]);
+
+    }*/
+
+     /*else {
         evt.target.id = "drop_zone";
         console.log("ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ");
         files = evt.target.files;
@@ -206,7 +220,7 @@ for (var i = 0; i < radios.length; i++) {
     })
 }
 
-var audio = new Audio();
+
 
 /*Presets equalizer*/
 var frequencyArr = [31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
@@ -312,3 +326,43 @@ function seektimeupdate(){
     durtimetext.innerHTML = durmins+":"+dursecs;
 }
 
+/*PlayList*/
+var currentTrack = 0;
+var changeTrack = function (i) {
+    console.log(currentTrack);
+    document.querySelectorAll('#list a')[currentTrack].classList.remove('current');
+    playButton.classList.add('pause');
+    if (currentTrack + i >= 0) {
+        currentTrack = currentTrack + i;
+    } else {
+        currentTrack = 0;
+    }
+    if (currentTrack < playlist.length) {
+        audio.src = URL.createObjectURL(playlist[currentTrack]);
+        audio.play();
+    } else {
+        currentTrack = 0;
+        audio.src = URL.createObjectURL(playlist[currentTrack]);
+        playButton.classList.remove('pause');
+    }
+    document.querySelectorAll('#list a')[currentTrack].classList.add('current');
+    updateMetaData(playlist[currentTrack]);
+    updateProgress();
+};
+
+audio.addEventListener('ended', function (e) {
+    changeTrack(1);
+});
+document.getElementById('prev').addEventListener('click', function (e) {
+    changeTrack(-1);
+});
+document.getElementById('next').addEventListener('click', function (e) {
+    changeTrack(1);
+});
+/*Navigation in playlist*/
+document.getElementById('list').addEventListener('click', function(e){
+    e.preventDefault();
+    if (e.target.nodeName === "A") {
+        changeTrack(e.target.attributes["data-track"].value - currentTrack);
+    }
+});

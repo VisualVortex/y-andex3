@@ -94,14 +94,14 @@ input[type=range] {
     background: #fff linear-gradient(#BCBCBC, #fff0f5);
     overflow: hidden;
     float: right;
-    margin: 2px 1px 0 0;
+    margin: 3px 3px 0 0;
 }
 #timebox {
     float: right;
     vertical-align: middle;
     margin: 4px 5px 0 0;
     text-shadow: 1px 1px 2px #000;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 input[type=range]::-moz-range-thumb {
@@ -116,8 +116,8 @@ input[type=range]::-moz-range-track {
 
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 15px;
-    height: 15px;
+    width: 18px;
+    height: 18px;
     border: 1px solid #818181;
     border-radius: 2px;
     background-image: linear-gradient(#dedede, #f2f2f2);
@@ -181,7 +181,7 @@ output {
     -moz-box-shadow: inset 2px 2px 10px #000;
     box-shadow: inset 2px 2px 10px #000;
     padding: 0;
-    height: 25px;
+    height: 30px;
     background: HSLa(0, 0%, 15%, 0.7);
 }
 
@@ -190,8 +190,12 @@ button {
     -moz-box-shadow: 2px 2px 10px #fff;
     box-shadow:  -1px 0 0 blue, -2px 0 0 #fff;*/
     outline:none;
+    transform: scale(0.65);
+
 }
 .goodButton{
+    /*position: absolute;*/
+    float: left;
     width: 28px;
     height: 28px;
     background: #ddd;
@@ -201,9 +205,11 @@ button {
     -webkit-box-shadow: inset 2px 2px 10px #ccc;
     -moz-box-shadow: inset 2px 2px 10px #ccc;
     box-shadow: inset 2px 2px 20px #000;
-    border: 1px solid #333;
+    border: 1px solid #111;
+    transform: scale(0.85);
+    margin: 0 5px 0 5px;
 }
-button.testButton {
+button.play {
     position: absolute;
     width: 0;
     height: 0;
@@ -214,19 +220,6 @@ button.testButton {
     border-right: 0;
     margin: 5px 0 0 5px;
     padding: 0;
-
-}
-button.play {
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-top: 10px solid transparent;
-    border-left: 20px solid #060;
-    border-bottom: 10px solid transparent;
-    background: transparent;
-    border-right: 0;
-    margin: 2px 0 0 25px;
-    padding: 0;
 }
 button.pause {
     position: absolute;
@@ -236,25 +229,25 @@ button.pause {
     border-top: 0;
     width: 20px;
     height: 20px;
-    margin: 2px 0 0 25px;
+    margin: 4px 0 0 3px;
     background: transparent;
 }
 
 button#stop {
     position: absolute;
-    margin: 2px 0 0 65px;
-    width: 20px;
-    height: 20px;
+    margin: 5px 0 0 5px;
+    width: 18px;
+    height: 18px;
     background: #000;
     border: 0;
     padding: 0;
 
 }
-button.play:hover, button.pause:hover, button#stop:hover,.goodButton:hover {
-    transform: scale(1.05);
+/*button.play:hover, button.pause:hover, button#stop:hover,*/.goodButton:hover {
+    transform: scale(0.89);
 }
-button.play:active, button.pause:active, button#stop:active, .goodButton:active {
-    transform: scale(0.95);
+/*button.play:active, button.pause:active, button#stop:active, */.goodButton:active {
+    transform: scale(0.83);
 }
 
 
@@ -275,4 +268,44 @@ button.play:active, button.pause:active, button#stop:active, .goodButton:active 
     height: 5px;
     display: inline-block;
     border-radius: 2px;
+}
+
+/* PlayList*/
+#playlist {
+    margin-top: -7px;
+    padding: 20px 30px;
+    height: 180px;
+    /*width: 500px;*/
+    background: url('../img/Soft-Light.jpg') no-repeat center;
+    background-size: cover;
+
+}
+
+#list {
+    height: 180px;
+    background: rgba(0, 0, 0, 0.3);
+    /*padding: 10px 5px;*/
+    color: #ffffff;
+
+    overflow: auto;
+}
+
+#playlist ul {
+    margin: 0;
+    list-style: none;
+    padding: 10px;
+}
+
+#playlist a {
+    font: normal 11px/15px Arial, sans-serif;
+    text-decoration: none;
+    color: #fff;
+}
+
+#playlist a:hover {
+    color: #d4d3d3;
+}
+
+#playlist a.current {
+    color: #50c1ce;
 }

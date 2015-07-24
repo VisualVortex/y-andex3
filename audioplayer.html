@@ -7,7 +7,8 @@
 </head>
 
 <body>
-<div class="too-player" style="position: relative; top: 0; left: 0"><!--onmousedown="dragOBJ(this,event); return false;"-->
+<div class="too-player" style="position: relative; top: 0; left: 0">
+    <!--onmousedown="dragOBJ(this,event); return false;"-->
     <div>
         <label class="file" for="files">Файл</label>
         <span class="logo">TooLive Player</span>
@@ -17,16 +18,20 @@
     <output id="drop_zone" class="list">Перетащите сюда аудиофайл</output>
 
     <div class="buttons">
-        <button id="play" class="play"></button>
-        <button id="stop"></button>
+        <div class="goodButton">
+            <button id="play" class="play"></button>
+        </div>
+        <div class="goodButton">
+            <button id="stop"></button>
+        </div>
         <input class="volume" type="range" min="0" max="1" value="0.5" step="0.01"/>
+
         <div id="timebox">
             <span id="curtimetext">00:00</span> / <span id="durtimetext">00:00</span>
         </div>
 
     </div>
     <div class="clear"></div>
-    <br>
 
 
     <div id="progressBar">
@@ -50,19 +55,20 @@
     </div>
 
 
-
-
     <!-- visualizer -->
     <input id="wave" type="radio" value="wave" name="visualization"/>
     <input id="spectrum" type="radio" value="spectrum" name="visualization"/>
 
     <div class="visualizer">
-        <div class="goodButton"><button id="testButton" class="testButton"></button></div>
         <label for="wave">Волна</label>
         <label for="spectrum">Спектр</label>
     </div>
     <canvas height="80" width="400" id="waveform">999</canvas>
+    <div id="playlist">
+        <div id="list"><ul>1</ul></div>
+    </div>
 </div>
+
 
 
 <script src="js/id3-min.js"></script>
