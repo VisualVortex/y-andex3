@@ -12,6 +12,7 @@ function handleFileSelect(evt) {
     /*stopPlay();*/
     console.log(evt.target.id);
 
+
     if (evt.target.id === "drop_zone") {
         files = evt.dataTransfer.files; // FileList object.
         //playlist.concat(evt.dataTransfer.files); // FileList object.
@@ -43,35 +44,33 @@ function handleFileSelect(evt) {
     //audio.src = URL.createObjectURL(playlist[0]);
     // files is a FileList of File objects. List some properties.
     var output = [];
-    for (var i = 0, f; f = files[i]; i++) {
-        output.push('<stong>', f.name, '</stong>');
-        /*Test*/
-
-        reader = new FileReader();
-        reader.onload = (function (theFile) {
-            return function (e) {
-                // Render thumbnail.
-                console.log('Load start');
-                initSound(e.target.result);
 
 
-            };
-        })(f);
-        reader.readAsArrayBuffer(f);
-
-
-        /*Test*/
-
-    }
     document.getElementById('drop_zone').innerHTML = output.join('');
-/*    playSound();
     audio.play();
     play = true;
-    playButton.className = 'pause';*/
+    playButton.className = 'pause';
+    /*    playSound();
+     */
     seektimeupdate();
     console.log("После обновления времени " + evt.target.id);
-}
+    /*Reader*/
+    for (var i = 0, f; f = files[i]; i++) {
+        output.push('<strong>', f.name, '</strong>');
+        /*Test*/
 
+        /*        reader = new FileReader();
+         reader.onload = (function (theFile) {
+         return function (e) {
+         // Render thumbnail.
+         console.log('Load start');
+         initSound(e.target.result);
+         };
+         })(f);
+         reader.readAsArrayBuffer(f);
+         }*/
+    }
+}
 
 function handleDragOver(evt) {
     evt.stopPropagation();
@@ -106,7 +105,7 @@ var stopButton = document.getElementById('stop');
 function togglePlay() {
     if (files) {
         if (!play) {
-            playSound();
+            /*playSound();*/ /*for Yandex*/
             audio.play();
             playButton.className = 'pause';
             play = true;
@@ -356,7 +355,12 @@ function updateMetaData(file) {
         });
 }
 
-/* Sound? */
+
+/* Buffer. Init sound For Yandex*//*
+
+*/
+/* Sound? *//*
+
 var startTime = 0;
 var startOffset = 0, audioBuffer,reader;
 function playSound() {
@@ -373,11 +377,18 @@ function playSound() {
     source.start(0, startOffset % source.buffer.duration);
 
 }
-function initSound(arrayBuffer) {
+
+*/
+/*Ниже загрузка уже закончилась*//*
+
+
+
+ function initSound(arrayBuffer) {
     context.decodeAudioData(arrayBuffer, function (buffer) {
         audioBuffer = buffer;
         console.log(buffer);
         console.log('Load end');
+        playSound();
         var buttons = document.querySelectorAll('button');
         buttons[0].disabled = false;
         buttons[1].disabled = false;
@@ -388,4 +399,4 @@ function initSound(arrayBuffer) {
 var range = document.querySelector('input[type="range"]')
 range.addEventListener('input', function(e){
     volumeSample.gain.value = e.target.value;
-});
+});*/
