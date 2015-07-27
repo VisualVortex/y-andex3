@@ -1,30 +1,20 @@
-'use strict'
-/*var reader, audioBuffer;*/
+"use strict";
 var audio = new Audio();
 var files, tags;
 var playlist = [];
-/*Drug and drop*/
 
 function handleFileSelect(evt) {
     evt.stopPropagation();
     evt.preventDefault();
     files = "";
-    /*stopPlay();*/
-    console.log(evt.target.id);
-
-
     if (evt.target.id === "drop_zone") {
-        files = evt.dataTransfer.files; // FileList object.
-        //playlist.concat(evt.dataTransfer.files); // FileList object.
+        files = evt.dataTransfer.files;
     } else if (evt.target.id === "files") {
         files = evt.target.files;
-        console.log("выбрали файл");
-        //playlist.concat(evt.target.files);
     }
     if (!playlist.length) {
         audio.src = URL.createObjectURL(files[0]);
         updateMetaData(files[0]);
-
     }
 
     var file = files[0];
@@ -33,55 +23,33 @@ function handleFileSelect(evt) {
     ID3.loadTags(file.name,
         function () {
             tags = ID3.getAllTags(file.name);
-            console.log(tags);
-            console.log("Рядом с тегами " + evt.target.id);
         },
         {
             tags: ["artist", "title", "album", "year", "comment", "track", "genre", "lyrics", "picture"],
             dataReader: FileAPIReader(file)
         });
-
-    //audio.src = URL.createObjectURL(playlist[0]);
-    // files is a FileList of File objects. List some properties.
     var output = [];
-
 
     document.getElementById('drop_zone').innerHTML = output.join('');
     audio.play();
     play = true;
     playButton.className = 'pause';
-    /*    playSound();
-     */
     seektimeupdate();
-    console.log("После обновления времени " + evt.target.id);
-    /*Reader*/
     for (var i = 0, f; f = files[i]; i++) {
         output.push('<strong>', f.name, '</strong>');
-        /*Test*/
-
-        /*        reader = new FileReader();
-         reader.onload = (function (theFile) {
-         return function (e) {
-         // Render thumbnail.
-         console.log('Load start');
-         initSound(e.target.result);
-         };
-         })(f);
-         reader.readAsArrayBuffer(f);
-         }*/
     }
+    document.getElementById('drop_zone').innerHTML = output.join('');
+
 }
 
 function handleDragOver(evt) {
     evt.stopPropagation();
     evt.preventDefault();
-    /*stopPlay();*/
     evt.dataTransfer.dropEffect = 'copy';
     evt.target.id = "drop_zone";
-    /*evt.target.className = "drop_zone2";*/
 }
 
-// Setup the dnd listeners.
+// dnd listener.
 var dropZone = document.getElementById('drop_zone');
 dropZone.addEventListener('dragover', handleDragOver, false);
 dropZone.addEventListener('drop', handleFileSelect, false);
@@ -89,10 +57,10 @@ dropZone.addEventListener('drop', handleFileSelect, false);
 document.getElementById('files').addEventListener('change', handleFileSelect, false);
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
-var context = new AudioContext();
+var context;
+context = new AudioContext();
 var source;
 var volumeSample = context.createGain();
-
 var volumeInput = document.querySelector('input[type="range"]');
 volumeInput.addEventListener('input', function (e) {
     volumeSample.gain.value = e.target.value;
@@ -105,7 +73,6 @@ var stopButton = document.getElementById('stop');
 function togglePlay() {
     if (files) {
         if (!play) {
-            /*playSound();*/ /*for Yandex*/
             audio.play();
             playButton.className = 'pause';
             play = true;
@@ -124,14 +91,14 @@ function stopPlay() {
 }
 
 
-playButton.addEventListener('click', function (e) {
+playButton.addEventListener('click', function () {
     togglePlay();
 });
 
-stopButton.addEventListener('click', function (e) {
+stopButton.addEventListener('click', function () {
     stopPlay();
 });
-/*Draw visualization*/
+/*visualization*/
 var WIDTH = 400;
 var HEIGHT = 80;
 var analyser = context.createAnalyser();
@@ -140,40 +107,29 @@ var canvasCtx = waveform.getContext('2d');
 var bufferLength = analyser.frequencyBinCount;
 var dataArray = new Uint8Array(bufferLength);
 
-
-/*Waveform*/
+/*Wave*/
 function drawWaveform() {
     analyser.fftSize = 2048;
-
     canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
     function draw() {
-        //var drawVisual = requestAnimationFrame(draw);
         analyser.getByteTimeDomainData(dataArray);
         canvasCtx.fillStyle = 'rgb(0, 0, 0)';
         canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
         canvasCtx.lineWidth = 2;
         canvasCtx.strokeStyle = 'rgb(256, 256, 256)';
-
         canvasCtx.beginPath();
-
-
-        var sliceWidth = WIDTH * 1.0 / bufferLength;
+        var sliceWidth = WIDTH / bufferLength;
         var x = 0;
-
         for (var i = 0; i < bufferLength; i++) {
-
             var v = dataArray[i] / 128.0;
             var y = v * HEIGHT / 2;
-
             if (i === 0) {
                 canvasCtx.moveTo(x, y);
             } else {
                 canvasCtx.lineTo(x, y);
             }
-
             x += sliceWidth;
         }
-
         canvasCtx.lineTo(canvas.width, canvas.height / 2);
         canvasCtx.stroke();
         requestAnimationFrame(draw);
@@ -184,12 +140,10 @@ function drawWaveform() {
 /*Spectrum*/
 function drawSpectrum() {
     analyser.fftSize = 256;
-
     canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
     function draw() {
         requestAnimationFrame(draw);
         analyser.getByteFrequencyData(dataArray);
-
         canvasCtx.fillStyle = 'rgb(0, 0, 0)';
         canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
         var barWidth = (WIDTH / bufferLength) * 17;
@@ -246,7 +200,6 @@ var presets = {
     jazz: [0, 0, 0, 3, 3, 3, 0, 2, 4, 4]
 };
 
-
 var genres = document.getElementsByName('genre');
 
 function setPreset(preset) {
@@ -255,20 +208,18 @@ function setPreset(preset) {
     }
 }
 
-for (var i = 0; i < genres.length; i++) {
+for (i = 0; i < genres.length; i++) {
     genres[i].addEventListener('change', function (e) {
         setPreset(e.target.value);
     });
 }
 
-
-window.addEventListener('load', function (e) {
+window.addEventListener('load', function () {
     source = context.createMediaElementSource(audio);
     source.connect(volumeSample);
     volumeSample.connect(filterArr[0]);
     filterArr[filterArr.length - 1].connect(analyser);
     filterArr[filterArr.length - 1].connect(context.destination);
-
 }, false);
 
 /*Progress bar*/
@@ -276,7 +227,6 @@ function updateProgress() {
     var progress = document.getElementById("progress");
     var value = 0;
     if (audio.currentTime > 0) {
-        //value = Math.floor((100 / audio.duration) * audio.currentTime);
         value = ((100 / audio.duration) * audio.currentTime).toFixed(2);
     }
     progress.style.width = value + "%";
@@ -309,7 +259,6 @@ function seek(event) {
     }
 }
 function seektimeupdate() {
-    /*var nt = audio.currentTime * (100 / audio.duration);*/
     seekslider.value = audio.currentTime * (100 / audio.duration);
     var curmins = Math.floor(audio.currentTime / 60);
     var cursecs = Math.floor(audio.currentTime - curmins * 60);
@@ -342,7 +291,6 @@ function updateMetaData(file) {
     ID3.loadTags(file.name,
         function () {
             tags = ID3.getAllTags(file.name);
-            console.log(tags);
             document.getElementById("artist").textContent = " | " + tags.artist || "";
             document.getElementById("title").textContent = tags.title || "";
             document.styleSheets[0].insertRule(".meta {height: 18 !important;}", 0);
@@ -354,49 +302,3 @@ function updateMetaData(file) {
             dataReader: FileAPIReader(file)
         });
 }
-
-
-/* Buffer. Init sound For Yandex*//*
-
-*/
-/* Sound? *//*
-
-var startTime = 0;
-var startOffset = 0, audioBuffer,reader;
-function playSound() {
-    source = context.createBufferSource();
-    source.buffer = audioBuffer;
-    //source.connect(context.destination);
-    source.connect(volumeSample);
-    volumeSample.connect(context.destination);
-    volumeSample.gain.value = range.value;
-    startTime = context.currentTime;
-    console.log('Start time:', startTime);
-    console.log('Start offset:', startOffset);
-    console.log('Start %:', startOffset % source.buffer);
-    source.start(0, startOffset % source.buffer.duration);
-
-}
-
-*/
-/*Ниже загрузка уже закончилась*//*
-
-
-
- function initSound(arrayBuffer) {
-    context.decodeAudioData(arrayBuffer, function (buffer) {
-        audioBuffer = buffer;
-        console.log(buffer);
-        console.log('Load end');
-        playSound();
-        var buttons = document.querySelectorAll('button');
-        buttons[0].disabled = false;
-        buttons[1].disabled = false;
-    }, function (e) {
-        console.log('Error decoding', e);
-    });
-}
-var range = document.querySelector('input[type="range"]')
-range.addEventListener('input', function(e){
-    volumeSample.gain.value = e.target.value;
-});*/

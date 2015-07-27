@@ -1,5 +1,3 @@
-/*Player style*/
-
 * {
     color: white;
 }
@@ -12,7 +10,6 @@ body {
     position: relative;
     margin: auto;
     width: 350px;
-    /*height: 350px;*/
     border: solid 3px #555;
     -moz-border-radius: 8px;
     -webkit-border-radius: 8px;
@@ -24,8 +21,8 @@ body {
     box-shadow: 3px 3px 10px #000;
     opacity: 0.9;
     transition: all 1.9s ease-in-out;
-    /*-webkit-transition: all 0.5s ease-in-out;*/
 }
+
 .too-player:hover {
     transform: scale(1.02);
     -webkit-box-shadow: 4px 6px 12px #111;
@@ -33,7 +30,6 @@ body {
     box-shadow: 4px 6px 12px #111;
 }
 
-/* Lables*/
 .file {
     position: absolute;
     border: solid 1px #444;
@@ -57,12 +53,10 @@ label {
 }
 
 label:nth-of-type(4) {
-    font-size: 14px;
+    font-size: 13px;
     padding-top: 4px;
-    background: HSLa(0, 0%, 15%, 0.7);
 }
 
-/* buttons*/
 #normal:checked ~ .equalizer label:nth-of-type(1),
 #rock:checked ~ .equalizer label:nth-of-type(2),
 #pop:checked ~ .equalizer label:nth-of-type(3),
@@ -72,6 +66,7 @@ label:nth-of-type(4) {
     color: red;
     background: HSLa(0, 0%, 10%, 0.6);
 }
+
 #waveform {
     height: 0;
     width: 350px;
@@ -86,22 +81,23 @@ label:nth-of-type(4) {
     transition: all 0.8s ease-in-out;
     border: 1px solid #ccc;
 }
+
 #off:checked ~ .visualizer label:nth-of-type(1),
 #wave:checked ~ .visualizer label:nth-of-type(2),
-#spectrum:checked ~ .visualizer label:nth-of-type(3){
+#spectrum:checked ~ .visualizer label:nth-of-type(3) {
     font-weight: bold;
     color: red;
     background: HSLa(0, 0%, 10%, 0.6);
 }
+
 #wave:checked ~ #waveform,
-#spectrum:checked ~ #waveform{
+#spectrum:checked ~ #waveform {
     height: 80px;
 }
 
 label:hover {
     background: HSLa(0, 0%, 5%, 0.6);
 }
-
 
 input[type=range] {
     -webkit-appearance: none;
@@ -115,6 +111,7 @@ input[type=range] {
     float: right;
     margin: 3px 3px 0 0;
 }
+
 #timebox {
     float: right;
     vertical-align: middle;
@@ -151,7 +148,6 @@ input[type=range]::-webkit-slider-thumb {
     display: inline-block;
     width: 100%;
     border-bottom: solid 1px #555;
-    /*height: 10px;*/
     overflow: hidden;
     background: #555;
     padding: 3px 10px;
@@ -184,7 +180,6 @@ output {
     padding: 6px 0;
 }
 
-
 .buttons, .meta {
     margin: 5px auto;
     width: 95%;
@@ -199,6 +194,7 @@ output {
     height: 30px;
     background: HSLa(0, 0%, 15%, 0.7);
 }
+
 .meta {
     opacity: 0;
     height: 0;
@@ -206,16 +202,14 @@ output {
     padding: 0 0 3px 0;
     transition: all 0.3s ease-in-out;
 }
+
 button {
-    /*-webkit-box-shadow: 2px 2px 10px #fff;
-    -moz-box-shadow: 2px 2px 10px #fff;
-    box-shadow:  -1px 0 0 blue, -2px 0 0 #fff;*/
-    outline:none;
+    outline: none;
     transform: scale(0.65);
 
 }
-.goodButton{
-    /*position: absolute;*/
+
+.goodButton {
     float: left;
     width: 28px;
     height: 28px;
@@ -230,6 +224,7 @@ button {
     transform: scale(0.85);
     margin: 0 5px 0 5px;
 }
+
 button.play {
     position: absolute;
     width: 0;
@@ -242,6 +237,7 @@ button.play {
     margin: 5px 0 0 5px;
     padding: 0;
 }
+
 button.pause {
     position: absolute;
     padding: 0;
@@ -262,16 +258,15 @@ button#stop {
     background: #000;
     border: 0;
     padding: 0;
-
 }
-/*button.play:hover, button.pause:hover, button#stop:hover,*/.goodButton:hover {
+
+.goodButton:hover {
     transform: scale(0.89);
 }
-/*button.play:active, button.pause:active, button#stop:active, */.goodButton:active {
+
+.goodButton:active {
     transform: scale(0.83);
 }
-
-
 
 #progressBar {
     border: 1px solid #aaa;
@@ -280,7 +275,6 @@ button#stop {
     height: 5px;
     border-radius: 2px;
     margin: auto;
-
 }
 
 #progress {
@@ -289,43 +283,4 @@ button#stop {
     height: 5px;
     display: inline-block;
     border-radius: 2px;
-}
-
-/* PlayList*/
-#playlist {
-    margin-top: -7px;
-    padding: 20px 30px;
-    height: 180px;
-    /*width: 500px;*/
-    background: url('../img/Soft-Light.jpg') no-repeat center;
-    background-size: cover;
-
-}
-
-#list {
-    height: 180px;
-    background: rgba(0, 0, 0, 0.3);
-    /*padding: 10px 5px;*/
-    color: #ffffff;
-    overflow: auto;
-}
-
-#playlist ul {
-    margin: 0;
-    list-style: none;
-    padding: 10px;
-}
-
-#playlist a {
-    font: normal 11px/15px Arial, sans-serif;
-    text-decoration: none;
-    color: #fff;
-}
-
-#playlist a:hover {
-    color: #d4d3d3;
-}
-
-#playlist a.current {
-    color: #50c1ce;
 }
