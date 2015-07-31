@@ -4,11 +4,17 @@
     <meta charset="UTF-8">
     <title></title>
     <link rel="stylesheet" href="css/audioplayer.css"/>
+    <link rel="stylesheet" href="../sheets.css">
 </head>
 
 <body>
-<div class="too-player" style="position: relative; top: 0; left: 0">
-    <!--onmousedown="dragOBJ(this,event); return false;"-->
+<ul class="sheets hide">
+    <!-- Показываем ссылки только на сервере. Что бы не было бага если скачают по отдельности -->
+    <li><a class="test" href="../y-andex1/airport.html">1</a></li>
+    <li><a class="test" href="../y-andex2/populations.html">2</a></li>
+    <li><a class="test" href="../y-andex3/audioplayer.html">3</a></li>
+</ul>
+<div class="too-player">
     <div>
         <label class="file" for="files">Файл</label>
         <span class="logo">TooLive Player</span>
